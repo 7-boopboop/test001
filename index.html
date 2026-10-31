@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Color Theory Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f7f0dc; --paper-line:#e4d8b8; --ink:#3a2e1f; --ink-soft:#786847;
+  --card-border:#dccfa0; --accent:#e06b2e; --sky:#2f7fb8; --sky-dark:#245f96;
+  --success:#2f9e5c; --success-bg:#e4f6e9; --gold:#f0b53a;
+  color-scheme: light;
+}
+*{box-sizing:border-box;}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+body{
+  margin:0; font-family:"Noto Sans Thai","Kanit",sans-serif; color:var(--ink);
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  background:
+    radial-gradient(ellipse at 15% 0%, rgba(255,255,255,.06), transparent 40%),
+    repeating-linear-gradient(90deg, #8a5a38 0 3px, #875531 3px 7px),
+    linear-gradient(170deg,#9a6a42,#7a4e2c 60%,#6b4327);
+}
+h1,h2,h3,.display{font-family:"Kanit",sans-serif;}
+.hand{font-family:"Caveat",cursive;}
+.wrap{max-width:1440px; margin:0 auto; padding:18px; position:relative;}
+
+/* sticky notes */
+.sticky{position:absolute; width:150px; padding:12px; font-size:13px; line-height:1.3; font-family:"Kanit";
+  background:#fbe27a; box-shadow:3px 5px 10px rgba(0,0,0,.25); color:#5c4a12; font-weight:600;}
+.sticky:before{content:"";position:absolute;top:-8px;left:50%;width:26px;height:14px;background:rgba(255,255,255,.5);border:1px solid rgba(0,0,0,.08);transform:translateX(-50%) rotate(-2deg);}
+.s1{top:4px; right:14px; transform:rotate(3deg);}
+.s2{bottom:150px; left:4px; transform:rotate(-4deg); background:#bfe3c8; color:#1f5a33;}
+
+/* header */
+header{
+  background:#fffaf0; border:1px solid var(--card-border); border-radius:18px;
+  padding:12px 20px; display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+  margin-bottom:16px; box-shadow:0 6px 0 rgba(0,0,0,.12);
+}
+.logo{display:flex; align-items:center; gap:10px;}
+.logo .emoji{font-size:28px;}
+.logo .title{font-weight:700; font-size:19px;}
+.logo .sub{font-size:12px; color:var(--ink-soft);}
+nav{display:flex; gap:6px; margin-left:8px; flex-wrap:wrap;}
+nav button{border:none; background:transparent; color:var(--ink-soft); font-family:inherit;
+  padding:8px 14px; border-radius:10px; font-size:14px; cursor:pointer; font-weight:500;}
+nav button.active{background:var(--sky); color:#fff;}
+.spacer{flex:1;}
+.level{display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-soft);}
+.xpbar{width:120px; height:8px; background:var(--paper-line); border-radius:6px; overflow:hidden;}
+.xpbar>i{display:block; height:100%; background:linear-gradient(90deg,var(--gold),var(--accent)); width:40%;}
+.icon-circ{width:30px;height:30px;border-radius:50%;background:var(--paper);display:flex;align-items:center;justify-content:center;}
+
+/* grid */
+.grid{display:grid; grid-template-columns: 300px 1fr 330px; gap:16px;}
+@media (max-width:1100px){ .grid{grid-template-columns:1fr;} }
+
+.paper-card{background:var(--paper); border:1px solid var(--card-border); border-radius:14px; padding:18px;
+  box-shadow:0 8px 0 rgba(0,0,0,.18), inset 0 0 0 1px rgba(255,255,255,.3);
+  background-image: repeating-linear-gradient(var(--paper) 0 34px, var(--paper-line) 34px 35px);
+  position:relative;}
+.paper-card.spiral{padding-left:30px;}
+.paper-card.spiral:before{content:"";position:absolute;left:8px;top:14px;bottom:14px;width:2px;
+  background:repeating-linear-gradient(180deg,#bba15a 0 6px, transparent 6px 16px); opacity:.6;}
+.card{background:#fffaf0; border:1px solid var(--card-border); border-radius:16px; padding:16px;
+  box-shadow:0 6px 0 rgba(0,0,0,.1);}
+.card + .card{margin-top:16px;}
+.card h2,.paper-card h2{margin:0 0 10px; font-size:16px; display:flex; align-items:center; gap:8px;}
+.sub-th{font-size:12px; color:var(--ink-soft); margin:-6px 0 12px;}
+
+/* recipe */
+.tabs{display:flex; gap:6px; margin-bottom:12px;}
+.tabs button{flex:1; border:1px solid var(--card-border); background:#fffaf0; color:var(--ink-soft);
+  padding:7px 0; border-radius:10px; font-family:inherit; cursor:pointer; font-size:13px; font-weight:500;}
+.tabs button.active{background:var(--sky); color:#fff; border-color:var(--sky);}
+.recipe-row{display:flex; align-items:center; gap:7px; padding:8px 2px; font-size:13px;}
+.dot{width:20px; height:20px; border-radius:50%; flex:none; border:2px solid rgba(0,0,0,.15);}
+.eq{color:var(--ink-soft); font-weight:700;}
+.tip{margin-top:10px; font-size:12px; color:var(--ink-soft); background:#fffaf0; padding:8px 10px; border-radius:10px; border:1px dashed var(--card-border);}
+
+/* paint tubes row */
+.tubes{display:flex; justify-content:space-between; margin-top:16px; padding:0 4px;}
+.tube{width:17%; text-align:center;}
+.tube .cap{height:14px; border-radius:4px 4px 0 0; margin:0 auto;}
+.tube .body{height:66px; width:100%; border-radius:3px 3px 8px 8px; position:relative; box-shadow:2px 3px 6px rgba(0,0,0,.3);}
+.tube .label{color:#fff; font-size:8px; font-weight:700; position:absolute; top:10px; left:0; right:0; text-align:center;}
+
+/* wheel card */
+.wheel-card{text-align:center;}
+.wheel-top{display:flex; justify-content:space-between; align-items:flex-start;}
+.quote-top{font-size:13px; color:var(--ink-soft); max-width:110px; text-align:right;}
+.wheel-wrap{max-width:430px; margin:6px auto 0;}
+.wheel-wrap .wheel-seg{cursor:pointer; transition:filter .15s;}
+.wheel-wrap .wheel-seg:hover{filter:brightness(.93); stroke-width:2.4;}
+.quote-bottom{display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-size:13px; color:var(--ink-soft); text-align:left;}
+
+/* mission */
+.mission-head{display:flex; align-items:center; gap:8px; font-weight:600;}
+.badge{background:var(--accent); color:#fff; width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:14px;}
+.checklist label{display:flex; align-items:center; gap:8px; font-size:13px; padding:5px 0; color:var(--ink-soft);}
+.checklist input{accent-color:var(--success); width:16px; height:16px;}
+.checklist label.done{color:var(--success); font-weight:600;}
+.progress-row{display:flex; justify-content:space-between; font-size:12px; color:var(--ink-soft); margin-top:10px;}
+.pbar{height:9px; background:var(--paper-line); border-radius:6px; overflow:hidden; margin-top:4px;}
+.pbar>i{display:block; height:100%; background:linear-gradient(90deg,var(--gold),var(--accent)); transition:width .3s;}
+
+.coach-card{background:linear-gradient(160deg,#2f7fb8,#1f4f7a); border-radius:16px; padding:14px; margin-top:16px; color:#fff;}
+.coach{display:flex; gap:10px; align-items:flex-start;}
+.coach .avatar{font-size:40px; background:#fff; border-radius:50%; width:52px;height:52px;display:flex;align-items:center;justify-content:center; flex:none;}
+.coach .name{font-weight:700; font-size:13px; display:block; margin-bottom:4px;}
+.coach .msg{font-size:13px; line-height:1.5;}
+.coach .hint{font-size:11px; opacity:.85; margin-top:6px; font-style:italic;}
+
+.result-row{display:flex; gap:12px; align-items:center; margin-top:4px;}
+.swatch{width:68px; height:68px; border-radius:14px; border:2px solid rgba(0,0,0,.15); flex:none; box-shadow:inset 0 0 10px rgba(0,0,0,.08);}
+.amt-table{flex:1; font-size:12px;}
+.amt-table div{display:flex; justify-content:space-between; padding:2px 0; color:var(--ink-soft);}
+.verdict{margin-top:12px; border-radius:12px; padding:10px 12px; font-size:13px; display:none;}
+.verdict.ok{display:flex; gap:10px; align-items:center; background:var(--success-bg); color:var(--success); font-weight:700;}
+.verdict.ok .vemoji{width:26px;height:26px;border-radius:50%;background:var(--success);color:#fff;display:flex;align-items:center;justify-content:center;flex:none;}
+.verdict.ok small{display:block; font-weight:400; margin-top:3px; color:var(--ink-soft); font-size:11px;}
+
+/* bottom 3-col */
+.row3{display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:16px; margin-top:16px;}
+@media (max-width:1000px){ .row3{grid-template-columns:1fr;} }
+.wells{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:10px;}
+.well{text-align:center;}
+.well .cup{width:48px; height:48px; border-radius:50%; margin:0 auto 5px; border:3px solid #ddd3b8; box-shadow:inset 0 4px 8px rgba(0,0,0,.15);}
+.well .name{font-size:10px; font-weight:600;}
+.stepper{display:flex; align-items:center; justify-content:center; gap:3px; margin-top:4px;}
+.stepper button{width:20px; height:20px; border-radius:6px; border:1px solid var(--card-border); background:#fffaf0; cursor:pointer; font-size:12px; line-height:1;}
+.stepper span{min-width:34px; font-size:10px;}
+.mix-result{display:flex; align-items:center; gap:12px; margin-top:14px; border-top:1px dashed var(--card-border); padding-top:12px;}
+.mix-result .big{width:70px; height:70px; border-radius:14px; border:2px solid rgba(0,0,0,.12); flex:none; box-shadow:inset 0 0 10px rgba(0,0,0,.1);}
+.mix-result .name{font-weight:700; font-size:14px;}
+.reset-btn{margin-left:auto; border:1px solid var(--card-border); background:#fffaf0; color:var(--ink-soft); padding:7px 12px; border-radius:10px; font-family:inherit; cursor:pointer; font-size:11px;}
+
+.gradbar{height:150px; border-radius:10px; margin-top:6px;}
+.hue{background:linear-gradient(180deg,red,yellow,limegreen,cyan,blue,magenta,red);}
+.sat{background:linear-gradient(180deg,#ff2d2d,#e06b2e);}
+.val{background:linear-gradient(180deg,#fff,#000);}
+.gradrow{display:flex; gap:10px;}
+.gradrow>div{flex:1;}
+.tstlabel{font-size:11px; color:var(--ink-soft); margin:10px 0 4px; font-weight:600;}
+.swrow{display:flex; gap:6px;}
+.swrow div{flex:1; height:30px; border-radius:7px;}
+
+footer{background:#2a2015; border-radius:14px; margin-top:16px; padding:14px 20px;
+  display:flex; align-items:center; justify-content:space-between; color:#e9d9bb; font-size:13px;}
+footer button{background:var(--sky); color:#fff; border:none; padding:9px 16px; border-radius:10px; font-family:inherit; font-size:13px; cursor:pointer; font-weight:600;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="sticky s1">Great Artists Start with Experimentation ✨</div>
+<div class="sticky s2">Good Color<br>Brighter Ideas ✨</div>
+
+<header>
+  <div class="logo"><span class="emoji">🎨</span>
+    <div><div class="title">Color Theory Studio</div><div class="sub">Mix • Explore • Learn • Create</div></div>
+  </div>
+  <nav><button>🏠 หน้าแรก</button><button>เรียนรู้</button><button class="active">ฝึกฝน</button><button>ท้าทาย</button><button>แกลเลอรี</button></nav>
+  <div class="spacer"></div>
+  <div class="level">
+    <span>🌱 Lv. 3</span>
+    <div class="xpbar"><i></i></div>
+    <span>120 / 300 XP</span>
+    <span class="icon-circ">🏆</span><span class="icon-circ">⚙️</span><span class="icon-circ">👤</span>
+  </div>
+</header>
+
+<div class="grid">
+  <div>
+    <div class="paper-card spiral">
+      <h2>🧪 สูตรการผสมสีพื้นฐาน</h2>
+      <div class="sub-th">Color Recipes</div>
+      <div class="tabs">
+        <button data-tab="primary">Primary</button>
+        <button data-tab="secondary" class="active">Secondary</button>
+        <button data-tab="tertiary">Tertiary</button>
+      </div>
+      <div id="recipeBody"></div>
+      <div class="tip">💡 เคล็ดลับ: ใช้อัตราส่วน 1:1 เพื่อให้ได้สีมาตรฐาน จากนั้นลองปรับเพิ่ม/ลดเพื่อสร้างเฉดใหม่!</div>
+      <div class="tubes">
+        <div class="tube"><div class="cap" style="background:#d4a400"></div><div class="body" style="background:linear-gradient(160deg,#f6d43a,#d9a900)"><span class="label" style="color:#5c4300">YELLOW<br>เหลือง</span></div></div>
+        <div class="tube"><div class="cap" style="background:#a31f1f"></div><div class="body" style="background:linear-gradient(160deg,#e3504f,#a31f1f)"><span class="label">RED<br>แดง</span></div></div>
+        <div class="tube"><div class="cap" style="background:#1d4f91"></div><div class="body" style="background:linear-gradient(160deg,#3f82cc,#1d4f91)"><span class="label">BLUE<br>น้ำเงิน</span></div></div>
+        <div class="tube"><div class="cap" style="background:#ccc"></div><div class="body" style="background:linear-gradient(160deg,#fff,#dcd6c4)"><span class="label" style="color:#5c5340">WHITE<br>ขาว</span></div></div>
+        <div class="tube"><div class="cap" style="background:#111"></div><div class="body" style="background:linear-gradient(160deg,#333,#000)"><span class="label">BLACK<br>ดำ</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="paper-card wheel-card">
+      <div class="wheel-top">
+        <div><h2 style="justify-content:flex-start">วงล้อสี (Color Wheel)</h2><div class="sub-th" style="text-align:left">ผสมสี • แต้มสี • เรียนรู้ • สร้างสรรค์</div></div>
+        <div class="quote-top hand">"ทุกสีนี้เรื่องราว ลองผสมดู" 💙</div>
+      </div>
+      <div class="wheel-wrap" id="wheelHolder"></div>
+      <div class="quote-bottom"><span class="hand">Mix · Paint · Discover Your Color 🙂</span><span>🖌️</span></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="mission-head"><span class="badge">🎯</span> ภารกิจที่ 1: สร้างสีส้ม (Orange)</div>
+      <div class="sub-th" style="margin-top:6px">ผสมสีจากแม่สีเท่านั้นให้ได้สีที่ใกล้มาตรฐาน</div>
+      <div class="checklist">
+        <label id="c1"><input type="checkbox" disabled> ใช้แม่สีเท่านั้น</label>
+        <label id="c2"><input type="checkbox" disabled> ความแม่นยำ ≥ 90%</label>
+        <label id="c3"><input type="checkbox" disabled> แต้มสีลงในวงล้อสี</label>
+      </div>
+      <div class="progress-row"><span>ความคืบหน้า</span><span id="pctText">0%</span></div>
+      <div class="pbar"><i id="pbar" style="width:0%"></i></div>
+    </div>
+
+    <div class="coach-card">
+      <div class="coach">
+        <div class="avatar">🧑‍🎨</div>
+        <div><span class="name">ครูผู้ช่วย AI (Art Coach)</span>
+          <div class="msg" id="coachMsg">ลองผสมสีแล้วแต้มลงในวงล้อสี ฉันจะช่วยตรวจและอธิบายให้เอง!</div>
+          <div class="hint">ศิลปะไม่ได้ถูกหรือผิด มีแค่การทดลองที่พาไปสู่ความเข้าใจ 💙</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🎨 ผลการผสมสีของคุณ</h2>
+      <div class="result-row">
+        <div class="swatch" id="missionSwatch"></div>
+        <div class="amt-table" id="missionAmts"></div>
+      </div>
+      <div class="verdict" id="verdict"></div>
+    </div>
+  </div>
+</div>
+
+<div class="row3">
+  <div class="card">
+    <h2>🎛️ ถาดผสมสี (Mixing Palette)</h2>
+    <div class="wells" id="wells"></div>
+    <div class="mix-result">
+      <div class="big" id="bigSwatch"></div>
+      <div><div class="name" id="bigName">สีผลลัพธ์</div><div class="sub-th" style="margin:2px 0 0">ผลลัพธ์ (Result)</div></div>
+      <button class="reset-btn" id="resetBtn">🔄 ล้างถาดผสม</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>🌈 การไล่ระดับสี</h2>
+    <div class="sub-th">Color Gradation</div>
+    <div class="gradrow">
+      <div><div class="tstlabel">HUE (เฉดสี)</div><div class="gradbar hue"></div></div>
+      <div><div class="tstlabel">SATURATION</div><div class="gradbar sat" id="satBar"></div></div>
+      <div><div class="tstlabel">VALUE</div><div class="gradbar val"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>🎚️ Tint • Shade • Tone</h2>
+    <div class="tstlabel">Tint (สี + ขาว)</div><div class="swrow" id="tintRow"></div>
+    <div class="tstlabel">Shade (สี + ดำ)</div><div class="swrow" id="shadeRow"></div>
+    <div class="tstlabel">Tone (สี + เทา)</div><div class="swrow" id="toneRow"></div>
+  </div>
+</div>
+
+<footer>
+  <span class="hand" style="font-size:16px">🔊 "ทดลอง ผสม เรียนรู้ เพราะทุกสี...เริ่มจากความกล้าลอง" 🌿</span>
+  <button>ถัดไป: ภารกิจถัดไป →</button>
+</footer>
+</div>
+
+<script>
+const RECIPES = {
+  primary:[{a:'#f6c93a',an:'Yellow',eq:'แม่สี',c:'#f6c93a',cn:'Yellow'},{a:'#d43a3a',an:'Red',eq:'แม่สี',c:'#d43a3a',cn:'Red'},{a:'#2f6fc7',an:'Blue',eq:'แม่สี',c:'#2f6fc7',cn:'Blue'}],
+  secondary:[{a:'#f6c93a',an:'Yellow',b:'#d43a3a',bn:'Red',eq:'=',c:'#e8822f',cn:'Orange'},{a:'#f6c93a',an:'Yellow',b:'#2f6fc7',bn:'Blue',eq:'=',c:'#3f9e5c',cn:'Green'},{a:'#d43a3a',an:'Red',b:'#2f6fc7',bn:'Blue',eq:'=',c:'#8a4fae',cn:'Purple'}],
+  tertiary:[{a:'#f6c93a',an:'Yellow',b:'#e8822f',bn:'Orange',eq:'=',c:'#f0a53a',cn:'Yellow-Orange'},{a:'#3f9e5c',an:'Green',b:'#2f6fc7',bn:'Blue',eq:'=',c:'#2f8a8a',cn:'Blue-Green'},{a:'#d43a3a',an:'Red',b:'#8a4fae',bn:'Purple',eq:'=',c:'#b04070',cn:'Red-Purple'}]
+};
+function renderRecipe(tab){
+  document.getElementById('recipeBody').innerHTML = RECIPES[tab].map(r=>`
+    <div class="recipe-row"><div class="dot" style="background:${r.a}"></div><span>${r.an}</span>
+    ${r.b?`<span class="eq">+</span><div class="dot" style="background:${r.b}"></div><span>${r.bn}</span>`:''}
+    <span class="eq">${r.eq}</span><div class="dot" style="background:${r.c}"></div><span>${r.cn}</span></div>`).join('');
+}
+document.querySelectorAll('.tabs button').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); renderRecipe(btn.dataset.tab);
+}));
+renderRecipe('secondary');
+
+function wheelSVG(){
+  // 12-segment outer ring: color names repeating primary/tertiary/secondary/tertiary, clockwise from Red at top
+  const OUTER=['Red','Red-Purple','Purple','Blue-Purple','Blue','Blue-Green','Green','Yellow-Green','Yellow','Yellow-Orange','Orange','Red-Orange'];
+  const cx=230,cy=230,rOuter=215,rMid=148;
+  function pt(r,deg){const a=deg*Math.PI/180;return [cx+r*Math.sin(a),cy-r*Math.cos(a)];}
+  function wrapLabel(lx,ly,name,size,rot){
+    const parts=name.split('-');
+    const t=rot?` transform="rotate(${rot} ${lx} ${ly})"`:'';
+    if(parts.length===2) return `<text x="${lx}" y="${ly}" text-anchor="middle" font-size="${size}" font-weight="600" fill="#3a2e1f" font-family="Kanit"${t}><tspan x="${lx}" dy="-4">${parts[0]}</tspan><tspan x="${lx}" dy="11">${parts[1]}</tspan></text>`;
+    return `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="${size}" font-weight="600" fill="#3a2e1f" font-family="Kanit"${t}>${name}</text>`;
+  }
+  let outerPaths='';
+  OUTER.forEach((name,i)=>{
+    const start=-15+i*30,end=start+30;
+    const [x1,y1]=pt(rOuter,start),[x2,y2]=pt(rOuter,end),[x3,y3]=pt(rMid,end),[x4,y4]=pt(rMid,start);
+    outerPaths+=`<path class="wheel-seg" data-name="${name}" onclick="paintSegment(this)" d="M${x1},${y1} A${rOuter},${rOuter} 0 0 1 ${x2},${y2} L${x3},${y3} A${rMid},${rMid} 0 0 0 ${x4},${y4} Z" fill="#ffffff" stroke="#8a7a52" stroke-width="1.2"/>`;
+    const mid=start+15,[lx,ly]=pt((rOuter+rMid)/2,mid);
+    let rot=mid; if(rot>90&&rot<270) rot+=180;
+    outerPaths+=wrapLabel(lx,ly,name,8.7,rot);
+  });
+  // Inner shape: triangle split into 3 center-sections pointing at the 3 primary ring positions (0,120,240),
+  // plus one secondary triangle on each side pointing outward at the 3 secondary ring positions (60,180,300) —
+  // the points act as arrows into the outer ring showing where each color sits.
+  const C=[cx,cy];
+  const V0=pt(rMid,0),V1=pt(rMid,120),V2=pt(rMid,240);
+  const mid2=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2];
+  const M01=mid2(V0,V1),M12=mid2(V1,V2),M20=mid2(V2,V0);
+  const Apurple=pt(rMid,60),Agreen=pt(rMid,180),Aorange=pt(rMid,300);
+  const poly=pts=>pts.map(p=>p.join(',')).join(' ');
+  const seg=(pts,name)=>`<polygon class="wheel-seg" data-name="${name}" onclick="paintSegment(this)" points="${poly(pts)}" fill="#ffffff" stroke="#8a7a52" stroke-width="1.2"/>`;
+  let innerPaths='';
+  innerPaths+=seg([V0,M01,C,M20],'Red')+seg([V1,M12,C,M01],'Blue')+seg([V2,M20,C,M12],'Yellow');
+  innerPaths+=seg([V0,Apurple,V1],'Purple')+seg([V1,Agreen,V2],'Green')+seg([V2,Aorange,V0],'Orange');
+  innerPaths+=wrapLabel(...pt(rMid*0.48,0),'Red',10.5)+wrapLabel(...pt(rMid*0.48,120),'Blue',10.5)+wrapLabel(...pt(rMid*0.48,240),'Yellow',10.5);
+  innerPaths+=wrapLabel(...pt(rMid*0.8,60),'Purple',10.5)+wrapLabel(...pt(rMid*0.8,180),'Green',10.5)+wrapLabel(...pt(rMid*0.8,300),'Orange',10.5);
+  return `<svg viewBox="0 0 460 460" style="width:100%">
+    <circle cx="${cx}" cy="${cy}" r="${rOuter+3}" fill="var(--paper)" stroke="var(--card-border)"/>
+    ${outerPaths}${innerPaths}
+    <circle id="paintDab" cx="${cx}" cy="${cy}" r="0" fill="var(--accent)" opacity="0"/></svg>`;
+}
+document.getElementById('wheelHolder').innerHTML = wheelSVG();
+let currentMixHex='#e6e0cc', anyPainted=false;
+function paintSegment(el){
+  el.setAttribute('fill', currentMixHex);
+  anyPainted = true;
+  update();
+}
+function resetWheelPaint(){
+  document.querySelectorAll('.wheel-seg').forEach(el=>el.setAttribute('fill','#ffffff'));
+  anyPainted = false;
+}
+
+const PIGMENTS={yellow:{rgb:[246,201,58],label:'Yellow'},red:{rgb:[212,58,58],label:'Red'},blue:{rgb:[47,111,199],label:'Blue'},white:{rgb:[255,255,255],label:'White'},black:{rgb:[30,27,24],label:'Black'}};
+let amounts={yellow:5,red:5,blue:0,white:0,black:0};
+function mixColor(amts){
+  const total=Object.values(amts).reduce((a,b)=>a+b,0);
+  if(total===0) return [230,222,200];
+  let r=0,g=0,b=0;
+  for(const k in amts){const w=amts[k]/total; r+=PIGMENTS[k].rgb[0]*w; g+=PIGMENTS[k].rgb[1]*w; b+=PIGMENTS[k].rgb[2]*w;}
+  return [Math.round(r),Math.round(g),Math.round(b)];
+}
+function rgbToHex([r,g,b]){return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');}
+function rgbToHsl([r,g,b]){r/=255;g/=255;b/=255;const max=Math.max(r,g,b),min=Math.min(r,g,b);let h=0,s=0,l=(max+min)/2;
+  if(max!==min){const d=max-min; s=l>0.5?d/(2-max-min):d/(max+min);
+    switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break;} h*=60;}
+  return [h,s*100,l*100];}
+function tintShadeTone(rgb){
+  const mix=(c,target,amt)=>c.map((v,i)=>Math.round(v+(target[i]-v)*amt));
+  const tints=[0.15,0.3,0.45,0.6,0.75].map(a=>rgbToHex(mix(rgb,[255,255,255],a)));
+  const shades=[0.15,0.3,0.45,0.6,0.75].map(a=>rgbToHex(mix(rgb,[20,18,16],a)));
+  const tones=[0.15,0.3,0.45,0.6,0.75].map(a=>rgbToHex(mix(rgb,[150,150,150],a)));
+  return {tints,shades,tones};
+}
+function colorNameGuess(h){
+  const names=[['Red',0],['Orange',30],['Yellow',55],['Yellow-Green',80],['Green',120],['Blue-Green',165],['Blue',210],['Blue-Purple',255],['Purple',280],['Red-Purple',320],['Red',355]];
+  let best=names[0],bd=361; names.forEach(n=>{const d=Math.min(Math.abs(h-n[1]),360-Math.abs(h-n[1])); if(d<bd){bd=d;best=n;}}); return best[0];
+}
+function buildWells(){
+  const holder=document.getElementById('wells'); holder.innerHTML='';
+  Object.keys(PIGMENTS).forEach(k=>{
+    const p=PIGMENTS[k]; const div=document.createElement('div'); div.className='well';
+    div.innerHTML=`<div class="cup" style="background:${rgbToHex(p.rgb)}"></div><div class="name">${p.label}</div>
+      <div class="stepper"><button data-k="${k}" data-d="-1">−</button><span id="amt-${k}">${amounts[k]} ml</span><button data-k="${k}" data-d="1">+</button></div>`;
+    holder.appendChild(div);
+  });
+  holder.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{
+    const k=btn.dataset.k,d=parseInt(btn.dataset.d);
+    amounts[k]=Math.max(0,Math.min(20,amounts[k]+d));
+    document.getElementById('amt-'+k).textContent=amounts[k]+' ml'; update();
+  }));
+}
+buildWells();
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  amounts={yellow:5,red:5,blue:0,white:0,black:0};
+  Object.keys(amounts).forEach(k=>document.getElementById('amt-'+k).textContent=amounts[k]+' ml');
+  resetWheelPaint(); update();
+});
+function update(){
+  const rgb=mixColor(amounts); const hex=rgbToHex(rgb); const [h,s,l]=rgbToHsl(rgb); const name=colorNameGuess(h);
+  currentMixHex=hex;
+  document.getElementById('bigSwatch').style.background=hex;
+  document.getElementById('bigName').textContent=name+' · '+hex;
+  document.getElementById('missionSwatch').style.background=hex;
+  document.getElementById('missionAmts').innerHTML=Object.keys(PIGMENTS).map(k=>`<div><span>● ${PIGMENTS[k].label}</span><span>${amounts[k]} ml</span></div>`).join('');
+  const total=Object.values(amounts).reduce((a,b)=>a+b,0);
+  const onlyPrimary=amounts.white===0&&amounts.black===0&&amounts.blue===0&&amounts.yellow>0&&amounts.red>0;
+  let accuracy=0;
+  if(total>0){
+    const target=30; const hueDiff=Math.min(Math.abs(h-target),360-Math.abs(h-target));
+    const ratioDiff=Math.abs(amounts.yellow-amounts.red)/Math.max(amounts.yellow,amounts.red,1);
+    accuracy=Math.max(0,100-hueDiff*2.2-ratioDiff*40); if(!onlyPrimary) accuracy*=0.3;
+  }
+  accuracy=Math.round(Math.min(100,accuracy)); const daubed=anyPainted; const hasPaint=total>0;
+  document.getElementById('c1').classList.toggle('done',onlyPrimary); document.getElementById('c1').querySelector('input').checked=onlyPrimary;
+  document.getElementById('c2').classList.toggle('done',accuracy>=90); document.getElementById('c2').querySelector('input').checked=accuracy>=90;
+  document.getElementById('c3').classList.toggle('done',daubed); document.getElementById('c3').querySelector('input').checked=daubed;
+  document.getElementById('pctText').textContent=accuracy+'%'; document.getElementById('pbar').style.width=accuracy+'%';
+  const dab=document.getElementById('paintDab');
+  if(hasPaint){dab.setAttribute('r',10);dab.setAttribute('fill',hex);dab.setAttribute('opacity',0.9);} else {dab.setAttribute('r',0);}
+  const verdict=document.getElementById('verdict'); const coach=document.getElementById('coachMsg');
+  if(accuracy>=90&&onlyPrimary){
+    verdict.className='verdict ok';
+    verdict.innerHTML=`<span class="vemoji">✓</span><div>ถูกต้อง!<small>ได้สี${name} (Orange) ซึ่งเป็น Secondary Color จากการผสม Yellow + Red ในอัตราส่วนที่เหมาะสม — +10 XP</small></div>`;
+    coach.textContent='เยี่ยมมาก! คุณผสมสีได้ถูกต้องตามหลักทฤษฎีสี ลองไปภารกิจถัดไปกันเลย!';
+  } else if(total===0){ verdict.className='verdict'; coach.textContent='ลองผสมสีแล้วแต้มลงในวงล้อสี ฉันจะช่วยตรวจและอธิบายให้เอง!'; }
+  else if(!onlyPrimary){ verdict.className='verdict'; coach.textContent='ภารกิจนี้ให้ใช้แม่สีเท่านั้นนะ ลองเอาสีขาว ดำ หรือน้ำเงินออกก่อนดูสิ'; }
+  else { verdict.className='verdict'; coach.textContent=`ใกล้แล้ว! ความแม่นยำตอนนี้ ${accuracy}% ลองปรับอัตราส่วนเหลืองกับแดงให้ใกล้เคียงกันมากขึ้น`; }
+  const tst=tintShadeTone(rgb);
+  document.getElementById('tintRow').innerHTML=tst.tints.map(c=>`<div style="background:${c}"></div>`).join('');
+  document.getElementById('shadeRow').innerHTML=tst.shades.map(c=>`<div style="background:${c}"></div>`).join('');
+  document.getElementById('toneRow').innerHTML=tst.tones.map(c=>`<div style="background:${c}"></div>`).join('');
+  document.getElementById('satBar').style.background=`linear-gradient(180deg, ${hex}, #e6e0d2)`;
+}
+update();
+</script>
+</body>
+</html>
